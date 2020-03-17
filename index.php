@@ -21,10 +21,14 @@ echo $us;
 //echo json_encode($search);
 
 // Carrega o ususario usando login e senha
+//$usuario = new Usuario();
+//$usuario->login("AA", "11");
+//echo $usuario;
 
-$usuario = new Usuario();
-$usuario->login("AA", "11");
-echo $usuario;
-
+$aluno = new Usuario();
+$aluno->setDeslogin("Aluno");
+$aluno->setDessenha("41uN0");
+$aluno->insert();
+echo $aluno;
 
 ?>

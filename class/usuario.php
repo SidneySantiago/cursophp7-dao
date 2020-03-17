@@ -40,11 +40,7 @@ class Usuario{
 		$sql = new Sql();
 		$results = $sql->select("SELECT * FROM tb_usuarios WHERE idusuario = :ID", array(":ID"=>$id));
 		if (count($results) > 0){
-			$row = $results[0];
-			$this->setIdusuario($row['idusuario']);
-			$this->setDeslogin($row['deslogin']);
-			$this->setDessenha($row['dessenha']);
-			$this->setDtcadastro(new DateTime($row['dtcadastro']));
+			$this->setData($results[0]);
 		}
 	}
  	
@@ -64,23 +60,15 @@ class Usuario{
 	public function login($usuario,$senha){
 		$sql = new Sql();
 		$results = $sql->select("SELECT * FROM tb_usuarios WHERE deslogin = :LOGIN AND dessenha = :PASSWORD", array(
-			":LOGIN"=>$usuario, 
-			":PASSWORD"=>$senha
+			':LOGIN'=>$usuario, 
+			':PASSWORD'=>$senha
 		));
 		if (count($results) > 0){
-			$row = $results[0];
-			$this->setIdusuario($row['idusuario']);
-			$this->setDeslogin($row['deslogin']);
-			$this->setDessenha($row['dessenha']);
-			$this->setDtcadastro(new DateTime($row['dtcadastro']));
-		} else{
+			$this->setData($results[0]);
+		} 
+		else{
 			throw new Exception("Login e/ou usuario invalidos");
-			
 		}
-
-
-
-
 	}
 
 // Busca por um usuario a partir da ID
@@ -91,6 +79,26 @@ class Usuario{
 			"dessenha"=>$this->getDessenha(),
 			"dtcadastro"=>$this->getDtcadastro()->format("d/m/Y H:i:s")
 		));
+	}
+public function setData($data){
+	$this->setIdusuario($data['idusuario']);
+	$this->setDeslogin($data['deslogin']);
+	$this->setDessenha($data['dessenha']);
+	$this->setDtcadastro(new DateTime($data['dtcadastro']));
+
+}
+
+
+// Inserções no BD
+	public function insert(){
+		$sql = new Sql();
+		$results = $sql->select("CALL sp_usuarios_insert(:LOGIN, :PASSWORD)", array(
+			':LOGIN'=>$this->getDeslogin(),
+			':PASSWORD'=>$this->getDessenha()	
+		));
+		if(count($results) > 0) {
+			$this->setData($results[0]);
+		}
 	}
 
 }
