@@ -25,10 +25,22 @@ echo $us;
 //$usuario->login("AA", "11");
 //echo $usuario;
 
-$aluno = new Usuario();
-$aluno->setDeslogin("Aluno");
-$aluno->setDessenha("41uN0");
+/** Insere no BD
+$aluno = new Usuario("João", "senha");
 $aluno->insert();
 echo $aluno;
+**/
+// Realizando um update:
+/*$usuario = new Usuario();
+$usuario->loadById(45);
+echo $usuario;
+$usuario->update("teste", "senha");
+echo $usuario;
+*/
+//Apagar um usuario
+$usuario = new Usuario();
+$usuario->loadById(44);
+$usuario->delete();
+echo $usuario;
 
 ?>
