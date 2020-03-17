@@ -4,13 +4,13 @@ class Usuario{
 
 	private $idusuario;
 	private $deslogin;
-	private $desenha;
+	private $dessenha;
 	private $dtcadastro;
 	// Usuario
-	public function getUsuario(){
+	public function getIdusuario(){
 		return $this->idusuario;
 	}
-	public function setUsuario($value){
+	public function setIdusuario($value){
 		$this->idusuario = $value;
 	}
 	// Login
@@ -41,22 +41,57 @@ class Usuario{
 		$results = $sql->select("SELECT * FROM tb_usuarios WHERE idusuario = :ID", array(":ID"=>$id));
 		if (count($results) > 0){
 			$row = $results[0];
-			$this->setUsuario($row['idusuario']);
+			$this->setIdusuario($row['idusuario']);
 			$this->setDeslogin($row['deslogin']);
 			$this->setDessenha($row['dessenha']);
 			$this->setDtcadastro(new DateTime($row['dtcadastro']));
 		}
 	}
+ 	
+ 	// Lista varios usuarios 
+	public static function getList(){
+		$sql = new Sql();
+		return $sql->select("SELECT * FROM  tb_usuarios ORDER BY deslogin;"); 
+	}
+	// lista para uma busca
+	public static function search($login){
+		$sql = new Sql();
+		return $sql->select("SELECT * FROM  tb_usuarios WHERE deslogin LIKE :SEARCH ORDER BY deslogin", array(
+			':SEARCH'=>"%".$login."%" )); 
+	}
+	
+	// função para fazer um login
+	public function login($usuario,$senha){
+		$sql = new Sql();
+		$results = $sql->select("SELECT * FROM tb_usuarios WHERE deslogin = :LOGIN AND dessenha = :PASSWORD", array(
+			":LOGIN"=>$usuario, 
+			":PASSWORD"=>$senha
+		));
+		if (count($results) > 0){
+			$row = $results[0];
+			$this->setIdusuario($row['idusuario']);
+			$this->setDeslogin($row['deslogin']);
+			$this->setDessenha($row['dessenha']);
+			$this->setDtcadastro(new DateTime($row['dtcadastro']));
+		} else{
+			throw new Exception("Login e/ou usuario invalidos");
+			
+		}
+
+
+
+
+	}
+
+// Busca por um usuario a partir da ID
 	public function __toString(){
 		return json_encode(array(
-			"idusuario"=>$this->getUsuario(),
+			"idusuario"=>$this->getIdusuario(),
 			"deslogin"=>$this->getDeslogin(),
 			"dessenha"=>$this->getDessenha(),
 			"dtcadastro"=>$this->getDtcadastro()->format("d/m/Y H:i:s")
 		));
 	}
-
-
 
 }
 
